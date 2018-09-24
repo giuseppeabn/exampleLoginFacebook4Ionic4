@@ -1,0 +1,69 @@
+'use strict'; var _createClass = function () {
+  function a(a, b) {
+    for (var c, d = 0; d < b.length; d++)c = b[d], c.enumerable = c.enumerable || !1, c.configurable = !0, 'value' in
+      c && (c.writable = !0), Object.defineProperty(a, c.key, c)
+  } return function (b, c, d) {
+    return
+    c && a(b.prototype, c), d && a(b, d), b
+  }
+}(); function _classCallCheck(a, b) {
+  if (!(a instanceof b)) throw new TypeError('Cannot
+  call a class as a function')}function _possibleConstructorReturn(a,b){if(!a)throw new ReferenceError('this hasn\'t
+  been initialised - super() hasn\'t been called'); return b && ('object' == typeof b || 'function' == typeof b) ? b : a
+} function
+  _inherits(a, b) {
+    if ('function' != typeof b && null !== b) throw new TypeError('Super expression must either be null or a
+  function, not
+  '+typeof b);a.prototype=Object.create(b&&b.prototype,{constructor:{value:a,enumerable:!1,writable:!0,configurable:!0}}),b&&(Object.setPrototypeOf?Object.setPrototypeOf(a,b):a.__proto__=b)}var CambioContrasena=function(a){function b(a){_classCallCheck(this,b);var c=_possibleConstructorReturn(this,(b.__proto__||Object.getPrototypeOf(b)).call(this,a));return c.state={contrasenia:{valor:'',aprobado:!1,editado:!1,mensaje:''},contraseniaRepetida:{valor:'',aprobado:!1,editado:!1,mensaje:''}},c}return _inherits(b,a),_createClass(b,[{key:'
+  cambioContrasenia',value:function d(a){var b=this,c=this.state.contrasenia;c.valor=a.target.value,this.setState({contrasenia:c},function(){return
+  b.validacionContrasenia()}); this.state.contraseniaRepetida; this.validacionRepeticionContrasenia()}}, {
+  key: 'validacionContrasenia', value: function
+    b() {
+      var a = this.state.contrasenia; return '' === a.valor.trim() ? (a.aprobado = !1, a.mensaje = 'Se debe ingresar una contrase\xF1a'
+      ) : 8 > a.valor.length ? (a.aprobado = !1, a.mensaje = 'Contrase\xF1a debe contener al menos 8
+  caracteres'):(a.aprobado=!0,a.mensaje=''),a.editado=!0,this.setState({contrasenia:a}),a.aprobado}},{key:'cambioRepeticionContrasenia',value:function
+    d(a){
+      var
+      b = this, c = this.state.contraseniaRepetida; c.valor = a.target.value, this.setState({ contraseniaRepetida: c }, function () {
+        return
+        b.validacionRepeticionContrasenia()
+      })
+    }
+  }, {
+    key: 'validacionRepeticionContrasenia', value: function b() {
+      var
+      a = this.state.contraseniaRepetida; return
+      a.valor === this.state.contrasenia.valor ? (a.aprobado = !0, a.mensaje = '') : (a.aprobado = !1, a.mensaje = 'Las contrase\xF1as
+  ingresadas no
+      coinciden'),a.editado=!0,this.setState({contraseniaRepetida:a}),a.aprobado}},{key:'submitAction',value:function
+      a(){
+        if (this.validacionContrasenia() && this.validacionRepeticionContrasenia()) {
+          var
+          b = this.props.apoderado.run.replace(/\./g, '').split('-'); $.ajax({
+            url: config['api-cuenta'] + '/cambio-clave-sin-solicitud', contentType: 'application/json', type: 'put', data: JSON.stringify({ run: b[0], clave: this.state.contrasenia.valor, origen: 'REGISTRO_PERSONAS' }), headers: this.props.jwt, statusCode: {
+              200: function () {
+                MensajeDeOk('Contrase\xF1a
+  modificada');var a=this.state.contrasenia;a.valor='',a.aprobado=!1,a.editado=!1,a.mensaje='';var
+  c = this.state.contraseniaRepetida; c.valor = '', c.aprobado = !1, c.editado = !1, c.mensaje = '', this.setState({ contrasenia: a, contraseniaRepetida: c }, function () {
+                  var
+                  a = new Date().getTime(); gtag('event', 'Modificar
+  contrase\xF1a',{event_category:'MenuSuperior',event_label:b[0],value:a})})}.bind(this)}}).fail(function(a){var c=new
+  Date().getTime(); switch (a.status) {
+                    case 401: MensajeDeError('Autorizaci\xF3n inv\xE1lida, deber\xE1s
+  reingresar'),gtag('event','Error 401 Modificar contrase\xF1a',{event_category:'Error
+  MenuSuperior',event_label:b[0],value:c}),window.removeEventListener('beforeunload',cancelarSalida),setTimeout(function(){window.location.replace(config.registro)},4e3);break;default:gtag('event','Error
+  '+a.status+' 401 Modificar contrase\xF1a',{event_category:'Error
+  MenuSuperior',event_label:b[0],value:c}),MensajeDeError('Ocurri\xF3 un error, favor intentar m\xE1s
+  tarde');}}.bind(this))}}},{key:'render',value:function b(){var a=this;return
+  React.createElement('div', { className: 'col-md-8', style: { clear: 'left' } }, React.createElement('h3', null, 'Modificar
+  contrase\xF1a de
+  acceso'),React.createElement('div',{className:'col - md - 12'},React.createElement(InputTexto,{className:'col - md - 6',label:'Ingresa
+  una nueva contrase\xF1a * ',addon:React.createElement('span',{className:'glyphicon
+  glyphicon - lock'}),type:'password',value:this.state.contrasenia.valor,cambioVariable:this.cambioContrasenia.bind(this),validation:this.state.contrasenia.aprobado||!this.state.contrasenia.editado,message:this.state.contrasenia.mensaje}),React.createElement(InputTexto,{className:'col - md - 6',label:'Vuelve
+  a ingresar tu contrase\xF1a * ',addon:React.createElement('span',{className:'glyphicon
+  glyphicon - lock'}),type:'password',value:this.state.contraseniaRepetida.valor,cambioVariable:this.cambioRepeticionContrasenia.bind(this),validation:this.state.contraseniaRepetida.aprobado||!this.state.contraseniaRepetida.editado,message:this.state.contraseniaRepetida.mensaje})),React.createElement('div',{className:'col - md - 4
+  pull - right'},React.createElement('button',{type:'button',className:'btn btn - block btn - ingreso',onClick:function
+  b(){ a.submitAction() }}, 'Modificar')))
+        }
+      }]), b
+    } (React.Component);
